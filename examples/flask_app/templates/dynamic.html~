@@ -1,0 +1,9 @@
+<table>
+{% for key in  dynamic_info.keys()%}
+    <tr>
+    <td>{{ key }}
+    <td>{{ dynamic_info[key]) }}
+    </td>
+    </tr>
+{% endfor %}
+</table>

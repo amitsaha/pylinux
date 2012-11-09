@@ -1,13 +1,24 @@
 import subprocess
 import os
 import platform
+import socket
+from collections import namedtuple
 
 import readproc
 
 ## static information
 
 def hostname():
-    return os.uname()[1]
+    return subprocess.check_output(['hostname','-f'])
+
+def ipaddr():
+    # Recipe: http://stackoverflow.com/a/166589/59634
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(("gmail.com",80))
+    ipaddr = s.getsockname()[0]
+    s.close()
+        
+    return ipaddr
 
 def distro_name():
     return platform.linux_distribution()[0]
@@ -36,13 +47,15 @@ def num_disks():
 def disk_stats():
     pass
 
+
 ## dynamic information
 
 def last_boot():
-    return subprocess.check_output(['who','-b']).strip().split()[2:3]
+    return subprocess.check_output(['who','-b']).\
+        strip().split()[2:3]
 
 def uptime():
-    pass
+    return readproc.uptime()
 
 def users():
     return subprocess.check_output(['who','-q']).splitlines()[0]
@@ -62,3 +75,16 @@ def lsof():
 
 def avg_load():
     return os.getloadavg()
+
+def netdevs():
+    with open('/proc/net/dev') as f:
+        net_dump = f.readlines()
+    
+    device_data={}
+    data = namedtuple('data',['rx','tx'])
+    for line in net_dump[2:]:
+        line = line.split(':')
+        if line[0].strip() != 'lo':
+            device_data[line[0].strip()] = data(line[1].split()[0], 
+                                                line[1].split()[8])
+    return device_data

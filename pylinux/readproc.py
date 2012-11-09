@@ -1,12 +1,21 @@
 import sys
 import os
 
+# uptime
+def uptime():
+    with open('/proc/uptime') as f:
+        # return uptime in hours
+        hours= (float(f.read().split()[0]))/(3600.0)
+    return hours
+              
+
+# number of processors
 def nprocs():
     nprocs=0
     with open('/proc/cpuinfo') as f:
         for line in f:
             if line.rstrip():
-                if line.split()[0]=='processor':
+                if line.split()[0]=='Processor':
                     nprocs = nprocs+1
     return nprocs
 
@@ -39,7 +48,7 @@ def meminfo():
     return meminfo
 
 def process_name(pid):
-    with open('/proc/{0}/cmdline'.format(pid)) as f:
+    with open('/proc/{0}/comm'.format(pid)) as f:
         cmdline=f.read()
         if cmdline.rstrip():
             process=cmdline.split()[0]

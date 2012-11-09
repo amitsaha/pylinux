@@ -1,0 +1,35 @@
+import  pylinux.pylinux as pylinux
+
+from collections import OrderedDict
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/dynamic")
+def dynamic():
+    dynamic_info = OrderedDict({'uptime':str(pylinux.uptime())+' hours',
+                                'nprocs':len(pylinux.processes()),
+                                'lsof':pylinux.lsof(),
+                                'freemem':str(float(pylinux.freemem().split()[0])/1024.0) + ' MB',
+                                'netstats':pylinux.netdevs(),
+                                'load':pylinux.avg_load()
+                                })
+    return render_template('dynamic.html',dynamic_info=dynamic_info)
+
+@app.route("/")
+def index():
+
+    static_info = {'hostname':pylinux.hostname(),
+                   'distribution':pylinux.distro_name(),
+                   'release': pylinux.distro_release() + \
+                       '(' +pylinux.distro_nickname() + ')', \
+                   'arch': pylinux.arch(),
+                   'cpudetails': pylinux.cpuinfo(),
+                   'totalmem': str(float(pylinux.totalmem().split()[0])/1024.0) + ' MB',
+                   'kernel':pylinux.kernel()
+                   #'interfaces':pylinux.netdevs()
+                   }
+    return render_template('index.html',static_info=static_info)
+                      
+if __name__ == "__main__":
+    app.run(host='0.0.0.0',debug=True)

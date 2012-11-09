@@ -1,0 +1,5 @@
+body            { font-family: sans-serif; background: #000000; }
+a, h1, h2       { color: #377BA8; }
+h1, h2          { font-family: 'Georgia', serif; margin: 0; }
+table               { font-family: 'Georgia', serif; margin: 0; color: #FFFFFF;}
+.dynamic        { font-family: 'Georgia', serif; margin: 0; color: #FFFFFF;}
