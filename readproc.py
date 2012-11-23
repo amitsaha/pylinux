@@ -9,6 +9,26 @@ def nprocs():
                 if line.split()[0]=='processor':
                     nprocs = nprocs+1
     return nprocs
+
+def cpuinfo():
+    cpuinfo={}
+    procinfo={}
+    nprocs = 0
+
+    with open('/proc/cpuinfo') as f:
+        for line in f:
+            if not line.strip():
+                # end of one processor
+                cpuinfo['proc%s' % nprocs] = procinfo
+                nprocs=nprocs+1
+                procinfo={}
+            else:
+                if len(line.split(':')) == 2:
+                    procinfo[line.split(':')[0]] = line.split(':')[1].strip()
+                else:
+                    procinfo[line.split(':')[0]] = ''
+            
+    return cpuinfo
     
 def meminfo():
     meminfo={}
@@ -125,4 +145,5 @@ if __name__=='__main__':
     #pstree(pid)
     
     # Shared libraries being used by processes
-    sharedlib_stats()
+    #sharedlib_stats()
+    pass
