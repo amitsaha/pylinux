@@ -25,7 +25,7 @@ def cpuinfo():
     return readproc.cpuinfo()
 
 def arch():
-    return os.uname()[3]
+    return os.uname()[4]
 
 def totalmem():
     return readproc.meminfo()['MemTotal']
