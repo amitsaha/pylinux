@@ -1,5 +1,6 @@
-from  pylinux import *
+from  pylinux.pylinux import *
 
+## Static
 print hostname()
 print distro_name()
 print distro_release()
