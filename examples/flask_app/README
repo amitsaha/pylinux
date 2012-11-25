@@ -1,0 +1,2 @@
+This is a Flask web application program to illustrate the use of pylinux.
+It uses jQuery to make AJAX requests for fetching runtime information.

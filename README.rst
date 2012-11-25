@@ -12,16 +12,17 @@ Static Information
 Dynamic Information
 -------------------
 
-* Uptime and time of last boot (TODO: uptime)
+* Uptime and time of last boot
 * Users logged in
 * Free memory
 * Running processes
 * Open files
 * Average load
-* Network Info, disk info.. (TODO)
+* Network Info
+* disk info.. (TODO)
 
 Usage
 -----
 
 * Install using # python setup.py install
-* See example/ for example usage
+* See examples/ for example usage.
