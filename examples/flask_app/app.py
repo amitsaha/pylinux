@@ -20,14 +20,12 @@ def dynamic():
 def index():
 
     static_info = OrderedDict({'FQDN':pylinux.hostname(),
-                   'Linux Distribution':pylinux.distro_name(),
-                   'Release': pylinux.distro_release() + \
-                       '(' +pylinux.distro_nickname() + ')', \
-                   'Arch': pylinux.arch(),
-                   'CPU Details': pylinux.cpuinfo(),
-                   'Total Memory': str(float(pylinux.totalmem().split()[0])/1024.0) + ' MB',
-                   'Kernel':pylinux.kernel()
-                   #'interfaces':pylinux.netdevs()
+                               'Linux Distribution':pylinux.distro_name(),
+                               'Release': pylinux.distro_release() + '(' +pylinux.distro_nickname() + ')',
+                               'Arch': pylinux.arch(),
+                               'Number of processors':pylinux.nprocs(),
+                               'Total Memory': str(float(pylinux.totalmem().split()[0])/1024.0) + ' MB',
+                               'Kernel':pylinux.kernel()
                    })
     return render_template('index.html',static_info=static_info)
                       

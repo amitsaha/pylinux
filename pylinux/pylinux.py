@@ -85,6 +85,6 @@ def netdevs():
     for line in net_dump[2:]:
         line = line.split(':')
         if line[0].strip() != 'lo':
-            device_data[line[0].strip()] = data(line[1].split()[0], 
-                                                line[1].split()[8])
+            device_data[line[0].strip()] = data(float(line[1].split()[0])/(1024.0*1024.0), 
+                                                float(line[1].split()[8])/(1024.0*1024.0))
     return device_data

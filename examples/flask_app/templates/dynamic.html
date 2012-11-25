@@ -1,9 +1,19 @@
 <table>
 {% for key in  dynamic_info.keys()%}
     <tr>
+    {% if key!='Network Stats' %}
     <td>{{ key }}
     <td>{{ dynamic_info[key] }}
     </td>
+    {% else %}
+    <td>Network Stats</td>
+    {% for device in dynamic_info[key].keys() %}
+    <td>{{ device }}</td>
+    <td>
+      {{ dynamic_info[key][device] }}
+    </td>
+    {% endfor %}
+    {% endif %}
     </tr>
 {% endfor %}
 </table>

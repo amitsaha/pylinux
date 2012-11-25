@@ -15,7 +15,7 @@ def nprocs():
     with open('/proc/cpuinfo') as f:
         for line in f:
             if line.rstrip():
-                if line.split()[0]=='Processor':
+                if line.split()[0].lower()=='processor':
                     nprocs = nprocs+1
     return nprocs
 
