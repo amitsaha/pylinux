@@ -25,4 +25,13 @@ Usage
 -----
 
 * Install using # python setup.py install
-* See examples/ for example usage.
+* Use away ::
+
+    >>> import pylinux.pylinux as pylinux
+    >>> pylinux.distro_name()
+    'Fedora remix'
+    >>> pylinux.arch()
+    'armv6l'
+    >>> pylinux.freemem()
+    '44356 kB
+* See examples/flask_app for a Flask web application using pylinux
