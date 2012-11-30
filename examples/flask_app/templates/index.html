@@ -4,29 +4,50 @@
 
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='smoothie.js') }}"></script>
   <script type="text/javascript">
+    
+    // Free memory
+    var freemem = new TimeSeries();
+    var nprocs = new TimeSeries();
+    var nfiles = new TimeSeries();    
+
+    function drawgraph(){
+    jQuery.getJSON("./plot", function(data){
+    freemem.append(new Date().getTime(),data.freemem);
+    nfiles.append(new Date().getTime(),data.nprocs);
+    nprocs.append(new Date().getTime(),data.nfiles);    
+    });
+    };
+
 
     function dynamic_stats(){
-    $.get("./dynamic", function(data){
-    $("div#dynamicstats").html(data);
+    jQuery.get("./dynamic", function(data){
+    jQuery("div#dynamicstats").html(data);
+    drawgraph();
     })};
 
     // Once on load
-    $(document).ready(function() {
+    jQuery(document).ready(function() {
     dynamic_stats();
-    document.title = 'System Information:: ' + $("#hostname").text().split(':')[1];
+    //document.title = 'System Information:: ' + jQuery("#hostname").text().split(':')[1];
+
+    var smoothie = new SmoothieChart({ grid: { strokeStyle: 'rgb(125, 0, 0)', fillStyle: 'rgb(60, 0, 0)', lineWidth: 1, millisPerLine: 250, verticalSections: 6 } });
+    smoothie.addTimeSeries(freemem, { strokeStyle: 'rgb(0, 255, 0)', fillStyle: 'rgba(0, 255, 0, 0.4)', lineWidth: 3 });
+    smoothie.streamTo(document.getElementById("freemem"), 1000);
+
+    var smoothie2 = new SmoothieChart({ grid: { strokeStyle: 'rgb(125, 0, 0)', fillStyle: 'rgb(60, 0, 0)', lineWidth: 1, millisPerLine: 250, verticalSections: 6 } });
+    smoothie2.addTimeSeries(nprocs, { strokeStyle: 'rgb(0, 255, 0)', fillStyle: 'rgba(0, 255, 0, 0.4)', lineWidth: 3 });
+    smoothie2.addTimeSeries(nfiles, { strokeStyle: 'rgb(255, 0, 255)', fillStyle: 'rgba(255, 0, 255, 0.3)', lineWidth: 3 });
+    smoothie2.streamTo(document.getElementById("procfiles"), 1000);
+
     });
 
     // Auto refresh of the dynamic stats
     setInterval(function() {
     dynamic_stats();
-    },5000);
-
-    // If you have more pressing needs
-    //$("#refresh").click(function() {
-    //dynamic_stats();
-    //});
-
+    },2000);
+    
   </script>
 </head>
 
@@ -45,6 +66,23 @@
 
   <h2> Statistics </h2>
   <div id="dynamicstats" class="dynamic">
+  </div>
+
+  <div id="smoothie" class="dynamic1">
+  <table>
+
+    <tr>
+      <center>
+      <td> <p>Free Memory (MB)</p>
+        <canvas id="freemem" width="600" height="100"></canvas>
+        </td>
+      <td>
+        <p> Processes and Open Files </p>
+        <canvas id="procfiles" width="600" height="100"></canvas>
+      </td>
+      </center>
+    </tr>
+  </table>
   </div>
 
 </body>

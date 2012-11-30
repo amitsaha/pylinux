@@ -2,15 +2,31 @@ import  pylinux.pylinux as pylinux
 
 from collections import OrderedDict
 from flask import Flask, render_template
+import json
 
 app = Flask(__name__)
+
+@app.route("/plot")
+def memory():
+    data={}
+
+    freemem=str(float(pylinux.freemem().split()[0])/1024.0)
+    data['freemem'] = freemem
+
+    nfiles = pylinux.lsof()
+    data['nfiles']= nfiles
+
+    nprocs=len(pylinux.processes())
+    data['nprocs']= nprocs
+
+    return json.dumps(data)
 
 @app.route("/dynamic")
 def dynamic():
     dynamic_info = OrderedDict({'Uptime':str(pylinux.uptime())+' hours',
-                                'Number of Processes':len(pylinux.processes()),
-                                'Open Files':pylinux.lsof(),
-                                'Free Memory':str(float(pylinux.freemem().split()[0])/1024.0) + ' MB',
+                                #'Number of Processes':len(pylinux.processes()),
+                                #'Open Files':pylinux.lsof(),
+                                #'Free Memory':str(float(pylinux.freemem().split()[0])/1024.0) + ' MB',
                                 'Network Stats':pylinux.netdevs(),
                                 'Load':pylinux.avg_load()
                                 })

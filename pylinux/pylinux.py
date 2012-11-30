@@ -9,7 +9,7 @@ import readproc
 ## static information
 
 def hostname():
-    return subprocess.check_output(['hostname','-f'])
+    return os.uname()[1]
 
 def ipaddr():
     # Recipe: http://stackoverflow.com/a/166589/59634
