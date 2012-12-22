@@ -1,37 +1,37 @@
 PyLinux: Python Interface to Linux System Information
 =====================================================
 
-Static Information
-------------------
+pylinux_ is a Python interface to system information on Linux
+systems. It uses simple text processing to read system files
+and also wraps number of functionalities exposed by standard modules
+such as `os`, `platform` and `sys` to expose a single easy to use Python
+interface to such information.
 
-* Hostname, CPU information and Archictecture, Total Memory.
-* Kernel version, Linux Distribution name and release
-* Disk Information (TODO)
+.. _pylinux: https://github.com/amitsaha/pylinux
+
+::
+
+    os | platform | sys | system files
+               |
+               |
+              \_/
+            pylinux
 
 
-Dynamic Information
--------------------
+Documentation
+=============
 
-* Uptime and time of last boot
-* Users logged in
-* Free memory
-* Running processes
-* Open files
-* Average load
-* Network Info
-* disk info.. (TODO)
+pylinux.readthedocs.org_
 
-Usage
------
+.. _pylinux.readthedocs.org: http://pylinux.readthedocs.org
 
-* Install using # python setup.py install
-* Use away ::
+Contact
+=======
 
-    >>> import pylinux.pylinux as pylinux
-    >>> pylinux.distro_name()
-    'Fedora remix'
-    >>> pylinux.arch()
-    'armv6l'
-    >>> pylinux.freemem()
-    '44356 kB
-* See examples/flask_app for a Flask web application using pylinux
+Amit Saha 
+
+* Homepage_
+* Email_
+
+.. _Homepage: http://echorand.me
+.. _Email: mailto:amitsaha.in@gmail.com

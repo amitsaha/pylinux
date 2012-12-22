@@ -1,16 +1,17 @@
+from collections import OrderedDict, namedtuple
 import sys
 import os
 
-# uptime
 def uptime():
+    ''' Returns system uptime in hours '''
+
     with open('/proc/uptime') as f:
-        # return uptime in hours
         hours= (float(f.read().split()[0]))/(3600.0)
     return hours
               
-
-# number of processors
 def nprocs():
+    ''' Number of processing units '''
+
     nprocs=0
     with open('/proc/cpuinfo') as f:
         for line in f:
@@ -20,8 +21,15 @@ def nprocs():
     return nprocs
 
 def cpuinfo():
-    cpuinfo={}
-    procinfo={}
+    ''' Return the information in /proc/cpuinfo
+    as a dictionary in the following format:
+    cpu_info['proc0']={...}
+    cpu_info['proc1']={...}
+
+    '''
+
+    cpuinfo=OrderedDict()
+    procinfo=OrderedDict()
     nprocs = 0
 
     with open('/proc/cpuinfo') as f:
@@ -33,13 +41,15 @@ def cpuinfo():
                 procinfo={}
             else:
                 if len(line.split(':')) == 2:
-                    procinfo[line.split(':')[0]] = line.split(':')[1].strip()
+                    procinfo[line.split(':')[0].strip()] = line.split(':')[1].strip()
                 else:
-                    procinfo[line.split(':')[0]] = ''
+                    procinfo[line.split(':')[0].strip()] = ''
             
     return cpuinfo
     
 def meminfo():
+    ''' Return the information in /proc/meminfo
+    as a dictionary '''
     meminfo={}
 
     with open('/proc/meminfo') as f:
@@ -48,15 +58,22 @@ def meminfo():
     return meminfo
 
 def process_name(pid):
-    with open('/proc/{0}/comm'.format(pid)) as f:
-        cmdline=f.read()
-        if cmdline.rstrip():
-            process=cmdline.split()[0]
-        else:
-            process=''
-    return process
+    ''' Given a PID return the process name '''
+    try:
+        with open('/proc/{0}/comm'.format(pid)) as f:
+            cmdline=f.read()
+            if cmdline.rstrip():
+                process=cmdline.split()[0]
+            else:
+                process=''
+    except IOError:
+        process= None
+    finally:
+        return process
 
 def process_list():
+    ''' List of all process IDs currently active '''
+
     #Idea stolen from psutil: http://code.google.com/p/psutil/
     pids = [subdir for subdir in os.listdir('/proc') if
             subdir.isdigit()]
@@ -64,7 +81,16 @@ def process_list():
 
 def maps(pid):
     ''' Returns the /proc/<pid>maps data as a machine consumable
-    list of dictionary objects'''
+    list of dictionary with each item having the following fields:
+
+    address
+    permissions
+    offset
+    dev
+    inode
+    pathname
+    '''
+
     pidmaps = []
     fields = ['address', 'perms', 'offset', 'dev', 'inode' ,'pathname']
     try:
@@ -79,12 +105,16 @@ def maps(pid):
                     else:
                         pidmap[field] = ""
                 pidmaps.append(pidmap)
-    except EnvironmentError:
+    except IOError:
         pidmaps = None
 
     return pidmaps
 
 def sharedlibs(pid):
+    ''' Shared libraries used by the process with the given 
+    PID 
+    '''
+
     pidmap = maps(pid)
     sharedlibs = {}
     if pidmap is not None:        
@@ -92,25 +122,10 @@ def sharedlibs(pid):
             if '.so' in item['pathname']:
                 if hash(item['pathname']) not in sharedlibs.keys():
                     sharedlibs[hash(item['pathname'])]= item['pathname']
-                    #print item['pathname']
     else:
-        print 'Non-existent process'
+        return None
     
     return sharedlibs
-
-def sharedlib_stats():
-    # sweep /proc for shared libraries being used by processes
-    pids = process_list()
-    lib_stats = {}
-    for pid in pids:
-        for lib in sharedlibs(pid).values():
-            if lib in lib_stats.keys():
-                lib_stats[lib] += 1
-            else:
-                lib_stats[lib] = 1
-
-    for lib in lib_stats.keys():
-        print os.path.split(lib)[1], lib_stats[lib]
 
 def status(pid):
     ''' Returns the state of the process as represented in
@@ -126,15 +141,15 @@ def status(pid):
 
     return status
 
-def ppid(d):
-    return d['PPid']
-
 def pstree(pid):
+
+    ''' Find the process tree corresponding to a process
+    with PID, pid '''
 
     if pid != '0':        
         status = status(pid)
         if status is not None:
-            ppid = ppid(status)
+            ppid = status['ppid']
             pid = ppid
             print status['Name'],status['Pid']            
             pstree(pid)
@@ -143,16 +158,19 @@ def pstree(pid):
             sys.exit()           
     else:
         return
-        
-if __name__=='__main__':
 
-    #pid = sys.argv[1]
+def netdevs():
+    ''' RX and TX bytes for each of the network devices '''
 
-    # Usage scenarios
-
-    # Process tree
-    #pstree(pid)
+    with open('/proc/net/dev') as f:
+        net_dump = f.readlines()
     
-    # Shared libraries being used by processes
-    #sharedlib_stats()
-    pass
+    device_data={}
+    data = namedtuple('data',['rx','tx'])
+    for line in net_dump[2:]:
+        line = line.split(':')
+        if line[0].strip() != 'lo':
+            device_data[line[0].strip()] = data(float(line[1].split()[0])/(1024.0*1024.0), 
+                                                float(line[1].split()[8])/(1024.0*1024.0))
+    
+    return device_data

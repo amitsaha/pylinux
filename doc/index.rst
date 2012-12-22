@@ -3,23 +3,37 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pylinux's documentation!
-===================================
+pylinux: Python interface to Linux System Information
+=====================================================
 
-Contents:
+pylinux_ is a Python interface to system information on Linux
+systems. It uses simple text processing to read system files
+and also wraps number of functionalities exposed by standard modules
+such as `os`, `platform` and `sys` to expose a single easy to use Python
+interface to such information.
+
+.. _pylinux: https://github.com/amitsaha/pylinux
+
+::
+
+    os | platform | sys | system files
+               |
+               |
+              \_/
+            pylinux
+
+
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
-   
-   pylinux
-   
 
+   howto
+   internals   
 
+API Documentation
+=================
 
-Indices and tables
-==================
-
-* :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
 
