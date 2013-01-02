@@ -13,6 +13,7 @@ virtualenv install ::
     $ virtualenv pylinux
     $ cd pylinux
     $ git clone https://github.com/amitsaha/pylinux
+    $ cd pylinux
     $ python setup.py install
 
 System-wide install ::
