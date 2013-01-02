@@ -8,16 +8,18 @@ functionalities.
 Installation
 ------------
 
+virtualenv install ::
+
+    $ virtualenv pylinux
+    $ cd pylinux
+    $ git clone https://github.com/amitsaha/pylinux
+    $ python setup.py install
+
 System-wide install ::
 
     $ git clone https://github.com/amitsaha/pylinux
     $ cd pylinux
     $ sudo python setup.py install
-
-Virtualenv install ::
-
-    TODO
-
 
 Usage
 -----
@@ -67,6 +69,9 @@ the free memory and network device statistics.
 .. _Flask: http://flask.pocoo.org
 .. _jQuery: http://jquery.com
 .. _smoothie: http://smoothiecharts.org/
+
+Install Flask using ::
+    $ pip-python install flask
 
 To start the web application, go to the `examples/flask_app` directory
 and run the `app.py` file, like so ::
