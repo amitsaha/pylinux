@@ -37,3 +37,11 @@ for dev in net_devs.keys():
     print dev + ': ' + 'Recieved (MB): ' + str(net_devs[dev].rx) +  \
         ' Transmitted (MB): ' + str(net_devs[dev].tx)
     
+
+#mounted file systems
+print 'Physical File Systems Mounted::'
+print pylinux.mounts()
+
+print 'All File Systems Mounted::'
+print pylinux.mounts(nodev=False)
+

@@ -66,13 +66,6 @@ def totalmem():
 
     return readproc.meminfo()['MemTotal']
 
-def num_disks():
-    ''' TODO '''
-    pass
-
-def disk_stats():
-    ''' TODO '''
-    pass
 
 ## dynamic information
 def last_boot():
@@ -117,3 +110,41 @@ def netdevs():
     module '''
 
     return readproc.netdevs()
+
+def mounts(nodev=True):
+    ''' Return current filesystem usage stats .
+    uses df utility command
+
+    nodev=True for getting physical FSs
+          False for all
+    '''
+
+    # Get the loaded FSs
+    loaded_fs=[]
+    with open('/proc/filesystems') as f:
+        for line in f:
+            line=line.split('\n')[0]
+            if nodev:
+                if line.split('\t')[0]=='':
+                    loaded_fs.append(line.split('\t')[1])
+            else:
+                loaded_fs.append(line.split('\t')[1])
+
+    # build up file system list for df
+    df_fs=[]
+    for fs in loaded_fs:
+        df_fs.extend(['-t',fs])
+
+    # Get the mounted file systems
+    df_cmd = ['df','-k','-T']
+    df_cmd.extend(df_fs)
+    df = subprocess.check_output(df_cmd)
+
+    # TODO: just return a list of mounted partitions for now
+    # in the following format:
+    # Filesystem     Type 1K-blocks      Used Available Use% Mounted on
+    # /dev/sda2      ext4  51614140  14499996  36589880  29% /
+    # ..
+    # Perhaps group them into a dictionary and return..
+
+    return df
